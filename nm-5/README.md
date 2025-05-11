@@ -32,7 +32,7 @@ Call Clarity is an advanced audio call analysis system that helps businesses mon
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/suhail-z/nm-projects/nm-5
+git clone https://github.com/suhail-z/nm-projects.git
 cd nm-5
 ```
 
@@ -127,3 +127,64 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For questions and feedback, please open an issue in the GitHub repository or contact:
 - GitHub: [suhail-z](https://github.com/suhail-z)
 - Project Repository: [nm-projects](https://github.com/suhail-z/nm-projects)
+
+# Call Clarity Monitor
+
+A real-time call monitoring and compliance analysis system for customer support and contact centers.
+
+## Dashboard Overview
+
+![Dashboard showing recent calls and quick actions](assets/1.png)
+*Main dashboard with recent calls, upload, record, and call history options.*
+
+## Key Features
+- Upload and analyze call recordings
+- Record live calls for real-time analysis
+- Automatic transcription and compliance scoring
+- Sentiment and language analysis
+- Detailed call history and reporting
+- Django backend with modular analyzer
+
+## Upload Call Recording
+
+![Upload interface for call recordings](assets/2.png)
+*Upload .wav or .mp3 files for compliance analysis. Tips for best results are provided.*
+
+## Record Live Call
+
+![Live call recording interface](assets/3.png)
+*Record and analyze audio in real-time. Guidelines ensure optimal recording quality.*
+
+## Call History
+
+![Call history with filters and export](assets/4.png)
+*Review and filter past calls, export reports, and access detailed analysis.*
+
+## Transcript & Compliance
+
+![Transcript and compliance score](assets/5.png)
+*View call transcript, compliance score, and checklist for compliance status.*
+
+## Detailed Metrics & Sentiment
+
+![Call statistics, sentiment, and key phrases](assets/6.png)
+*Analyze call duration, talk time, sentiment, and key phrases.*
+
+## Compliance Analysis
+
+![Compliance status and details](assets/8.png)
+*Visualize compliance findings, violations, and compliant actions.*
+
+## Sentiment Analysis
+
+![Sentiment analysis and interpretation](assets/9.png)
+*Agent tone and customer sentiment analysis with interaction quality metrics.*
+
+## Documentation
+For more details, see [documentation.md](documentation.md) and [about.md](about.md).
+
+## License
+MIT License. See [LICENSE](LICENSE) for details.
+
+## Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.

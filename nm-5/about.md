@@ -13,15 +13,18 @@ Call Clarity Monitor is an advanced call analysis platform designed to help orga
 
 ## High-Level Workflow
 
-1. **Audio Upload/Recording**: Users upload or record call audio via a modern web interface.
-2. **Real-Time Processing**: The backend processes the audio in several stages:
-   - **Transcription**: Converts speech to text, separating agent and customer dialogues with speaker diarization.
-   - **Sentiment Analysis**: Evaluates the emotional tone of each utterance.
-   - **Content Safety**: Flags potentially unsafe or sensitive content.
-   - **Compliance Audit**: Uses OpenAI (GPT-4) to assess the call against compliance checklists, scoring, and generating recommendations.
-   - **Analytics Extraction**: Calculates metrics like talk time, silence, interruptions, and key phrases.
-3. **Live Progress Updates**: Users see engaging, animated progress and status updates in real time, thanks to WebSocket-powered communication.
-4. **Results & History**: Users can review detailed transcripts, analytics, compliance reports, and historical call records.
+1. **Audio Upload/Recording**
+   - ![Upload or record call audio](assets/2.png)
+   *Modern web interface for uploading or recording calls.*
+2. **Real-Time Processing**
+   - ![Live call recording and progress](assets/3.png)
+   *Live call recording with real-time progress and status updates.*
+3. **Results & History**
+   - ![Call history and analysis results](assets/4.png)
+   *Review detailed transcripts, analytics, compliance reports, and historical call records.*
+4. **Transcript & Compliance**
+   - ![Transcript and compliance score](assets/5.png)
+   *Automated transcript with compliance scoring and checklist.*
 
 ## Backend Architecture
 
@@ -52,6 +55,20 @@ Call Clarity Monitor is an advanced call analysis platform designed to help orga
 - **Compliance Auditing**: AI-driven checklists, risk levels, and improvement suggestions help organizations stay ahead of regulatory requirements.
 - **Analytics Dashboard**: Visualizes talk time, interruptions, silence, and key phrases for operational insights.
 - **History & Search**: Easily access and review past call analyses.
+
+## User Experience Highlights
+
+- **Dashboard Overview**
+  - ![Dashboard overview](assets/1.png)
+  *Quick access to upload, record, and view recent calls.*
+- **Detailed Metrics & Sentiment**
+  - ![Call statistics and sentiment](assets/6.png)
+  *Visualizes talk time, sentiment, and key phrases for operational insights.*
+- **Compliance & Sentiment Analysis**
+  - ![Compliance analysis](assets/8.png)
+  *Compliance findings and actionable details.*
+  - ![Sentiment analysis](assets/9.png)
+  *Agent tone and customer sentiment analysis.*
 
 ## Who is it for?
 
