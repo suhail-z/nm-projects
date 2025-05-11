@@ -1,0 +1,970 @@
+What is batch transcription?
+Article
+03/10/2025
+5 contributors
+In this article
+How does it work?
+Next steps
+ Important
+
+New pricing is in effect for batch transcription via Speech to text REST API v3.2. For more information, see the pricing guide.
+
+Batch transcription is used to transcribe a large amount of audio data in storage. Both the Speech to text REST API and Speech CLI support batch transcription.
+
+You should provide multiple files per request or point to an Azure Blob Storage container with the audio files to transcribe. The batch transcription service can handle a large number of submitted transcriptions. The service transcribes the files concurrently, which reduces the turnaround time.
+
+How does it work?
+With batch transcriptions, you submit the audio data, and then retrieve transcription results asynchronously. The service transcribes the audio data and stores the results in a storage container. You can then retrieve the results from the storage container.
+
+ Tip
+
+For a low or no-code solution, you can use the Batch Speech to text Connector in Power Platform applications such as Power Automate, Power Apps, and Logic Apps. See the Power automate batch transcription guide to get started.
+
+To use the batch transcription REST API:
+
+Locate audio files for batch transcription - You can upload your own data or use existing audio files via public URI or shared access signature (SAS) URI.
+Create a batch transcription - Submit the transcription job with parameters such as the audio files, the transcription language, and the transcription model.
+Get batch transcription results - Check transcription status and retrieve transcription results asynchronously.
+ Important
+
+Batch transcription jobs are scheduled on a best-effort basis. At peak hours it may take up to 30 minutes or longer for a transcription job to start processing. See how to check the current status of a batch transcription job in this section.
+part -1
+Locate audio files for batch transcription
+Article
+03/10/2025
+5 contributors
+In this article
+Supported audio formats and codecs
+Azure Blob Storage upload
+Trusted Azure services security mechanism
+SAS URL for batch transcription
+Next steps
+Batch transcription is used to transcribe a large amount of audio in storage. Batch transcription can access audio files from inside or outside of Azure.
+
+When source audio files are stored outside of Azure, they can be accessed via a public URI (such as "https://crbn.us/hello.wav"). Files should be directly accessible; URIs that require authentication or that invoke interactive scripts before the file can be accessed aren't supported.
+
+Audio files that are stored in Azure Blob storage can be accessed via one of two methods:
+
+Trusted Azure services security mechanism
+Shared access signature (SAS) URI.
+You can specify one or multiple audio files when creating a transcription. We recommend that you provide multiple files per request or point to an Azure Blob storage container with the audio files to transcribe. The batch transcription service can handle a large number of submitted transcriptions. The service transcribes the files concurrently, which reduces the turnaround time.
+
+Supported audio formats and codecs
+The batch transcription API (and fast transcription API) supports multiple formats and codecs, such as:
+
+WAV
+MP3
+OPUS/OGG
+FLAC
+WMA
+AAC
+ALAW in WAV container
+MULAW in WAV container
+AMR
+WebM
+SPEEX
+ Note
+
+Batch transcription service integrates GStreamer and might accept more formats and codecs without returning errors. We suggest to use lossless formats such as WAV (PCM encoding) and FLAC to ensure best transcription quality.
+
+Azure Blob Storage upload
+When audio files are located in an Azure Blob Storage account, you can request transcription of individual audio files or an entire Azure Blob Storage container. You can also write transcription results to a Blob container.
+
+ Note
+
+For blob and container limits, see batch transcription quotas and limits.
+
+Azure portal
+Azure CLI
+Follow these steps to create a storage account and upload wav files from your local directory to a new container.
+
+Go to the Azure portal and sign in to your Azure account.
+Create a Storage account resource in the Azure portal. Use the same subscription and resource group as your Speech resource.
+Select the Storage account.
+In the Data storage group in the left pane, select Containers.
+Select + Container.
+Enter a name for the new container and select Create.
+Select the new container.
+Select Upload.
+Choose the files to upload and select Upload.
+Trusted Azure services security mechanism
+This section explains how to set up and limit access to your batch transcription source audio files in an Azure Storage account using the trusted Azure services security mechanism.
+
+ Note
+
+With the trusted Azure services security mechanism, you need to use Azure Blob storage to store audio files. Usage of Azure Files is not supported.
+
+If you perform all actions in this section, your Storage account is configured as follows:
+
+Access to all external network traffic is prohibited.
+Access to Storage account using Storage account key is prohibited.
+Access to Storage account blob storage using shared access signatures (SAS) is prohibited.
+Access to the selected Speech resource is allowed using the resource system assigned managed identity.
+So in effect your Storage account becomes completely "locked" and can't be used in any scenario apart from transcribing audio files that were already present by the time the new configuration was applied. You should consider this configuration as a model as far as the security of your audio data is concerned and customize it according to your needs.
+
+For example, you can allow traffic from selected public IP addresses and Azure Virtual networks. You can also set up access to your Storage account using private endpoints (see as well this tutorial), re-enable access using Storage account key, allow access to other Azure trusted services, etc.
+
+ Note
+
+Using private endpoints for Speech isn't required to secure the storage account. You can use a private endpoint for batch transcription API requests, while separately accessing the source audio files from a secure storage account, or the other way around.
+
+By following the steps below, you severely restrict access to the storage account. Then you assign the minimum required permissions for Speech resource managed identity to access the Storage account.
+
+Enable system assigned managed identity for the Speech resource
+Follow these steps to enable system assigned managed identity for the Speech resource that you use for batch transcription.
+
+Go to the Azure portal and sign in to your Azure account.
+
+Select the Speech resource.
+
+In the Resource Management group in the left pane, select Identity.
+
+On the System assigned tab, select On for the status.
+
+ Important
+
+User assigned managed identity won't meet requirements for the batch transcription storage account scenario. Be sure to enable system assigned managed identity.
+
+Select Save
+
+Now the managed identity for your Speech resource can be granted access to your storage account.
+
+Restrict access to the storage account
+Follow these steps to restrict access to the storage account.
+
+ Important
+
+Upload audio files in a Blob container before locking down the storage account access.
+
+Go to the Azure portal and sign in to your Azure account.
+Select the Storage account.
+In the Settings group in the left pane, select Configuration.
+Select Disabled for Allow Blob public access.
+Select Disabled for Allow storage account key access
+Select Save.
+For more information, see Prevent anonymous public read access to containers and blobs and Prevent Shared Key authorization for an Azure Storage account.
+
+Configure Azure Storage firewall
+Having restricted access to the Storage account, you need to grant access to specific managed identities. Follow these steps to add access for the Speech resource.
+
+Go to the Azure portal and sign in to your Azure account.
+
+Select the Storage account.
+
+In the Security + networking group in the left pane, select Networking.
+
+In the Firewalls and virtual networks tab, select Enabled from selected virtual networks and IP addresses.
+
+Deselect all check boxes.
+
+Make sure Microsoft network routing is selected.
+
+Under the Resource instances section, select Microsoft.CognitiveServices/accounts as the resource type and select your Speech resource as the instance name.
+
+Select Save.
+
+ Note
+
+It might take up to 5 min for the network changes to propagate.
+
+Although by now the network access is permitted, the Speech resource can't yet access the data in the Storage account. You need to assign a specific access role for Speech resource managed identity.
+
+Assign resource access role
+Follow these steps to assign the Storage Blob Data Reader role to the managed identity of your Speech resource.
+
+ Important
+
+You need to be assigned the Owner role of the Storage account or higher scope (like Subscription) to perform the operation in the next steps. This is because only the Owner role can assign roles to others. See details here.
+
+Go to the Azure portal and sign in to your Azure account.
+
+Select the Storage account.
+
+Select Access Control (IAM) menu in the left pane.
+
+Select Add role assignment in the Grant access to this resource tile.
+
+Select Storage Blob Data Reader under Role and then select Next.
+
+Select Managed identity under Members > Assign access to.
+
+Assign the managed identity of your Speech resource and then select Review + assign.
+
+Screenshot of the managed role assignment review.
+
+After confirming the settings, select Review + assign
+
+Now the Speech resource managed identity has access to the Storage account and can access the audio files for batch transcription.
+
+With system assigned managed identity, you use a plain Storage Account URL (no SAS or other additions) when you create a batch transcription request. For example:
+
+JSON
+
+Copy
+{
+    "contentContainerUrl": "https://<storage_account_name>.blob.core.windows.net/<container_name>"
+}
+You could otherwise specify individual files in the container. For example:
+
+JSON
+
+Copy
+{
+    "contentUrls": [
+        "https://<storage_account_name>.blob.core.windows.net/<container_name>/<file_name_1>",
+        "https://<storage_account_name>.blob.core.windows.net/<container_name>/<file_name_2>"
+    ]
+}
+SAS URL for batch transcription
+A shared access signature (SAS) is a URI that grants restricted access to an Azure Storage container. Use it when you want to grant access to your batch transcription files for a specific time range without sharing your storage account key.
+
+ Tip
+
+If the container with batch transcription source files should only be accessed by your Speech resource, use the trusted Azure services security mechanism instead.
+
+Azure portal
+Azure CLI
+Follow these steps to generate a SAS URL that you can use for batch transcriptions.
+
+Complete the steps in Azure Blob Storage upload to create a Storage account and upload audio files to a new container.
+
+Select the new container.
+
+In the Settings group in the left pane, select Shared access tokens.
+
+Select + Container.
+
+Select Read and List for Permissions.
+
+Screenshot of the container SAS URI permissions.
+
+Enter the start and expiry times for the SAS URI, or leave the defaults.
+
+Select Generate SAS token and URL.
+
+You use the SAS URL when you create a batch transcription request. For example:
+
+JSON
+
+Copy
+{
+    "contentContainerUrl": "https://<storage_account_name>.blob.core.windows.net/<container_name>?SAS_TOKEN"
+}
+You could otherwise specify individual files in the container. You must generate and use a different SAS URL with read (r) permissions for each file. For example:
+
+JSON
+
+Copy
+{
+    "contentUrls": [
+        "https://<storage_account_name>.blob.core.windows.net/<container_name>/<file_name_1>?SAS_TOKEN_1",
+        "https://<storage_account_name>.blob.core.windows.net/<container_name>/<file_name_2>?SAS_TOKEN_2"
+    ]
+}
+part -2 
+Create a batch transcription
+Article
+03/10/2025
+8 contributors
+Choose a tool or API
+In this article
+Prerequisites
+Create a transcription job
+Request configuration options
+Use a custom model
+Show 3 more
+With batch transcriptions, you submit audio data in a batch. The service transcribes the audio data and stores the results in a storage container. You can then retrieve the results from the storage container.
+
+ Important
+
+New pricing is in effect for batch transcription that uses the speech to text REST API v3.2. For more information, see the pricing guide.
+
+Prerequisites
+You need a standard (S0) Speech resource. Free resources (F0) aren't supported.
+
+Create a transcription job
+To create a batch transcription job, use the Transcriptions_Create operation of the speech to text REST API. Construct the request body according to the following instructions:
+
+You must set either the contentContainerUrl or contentUrls property. For more information about Azure blob storage for batch transcription, see Locate audio files for batch transcription.
+Set the required locale property. This value should match the expected locale of the audio data to transcribe. You can't change the locale later.
+Set the required displayName property. Choose a transcription name that you can refer to later. The transcription name doesn't have to be unique and can be changed later.
+Optionally, to use a model other than the base model, set the model property to the model ID. For more information, see Use a custom model and Use a Whisper model.
+Optionally, set the wordLevelTimestampsEnabled property to true to enable word-level timestamps in the transcription results. The default value is false. For Whisper models, set the displayFormWordLevelTimestampsEnabled property instead. Whisper is a display-only model, so the lexical field isn't populated in the transcription.
+Optionally, set the languageIdentification property. Language identification is used to identify languages spoken in audio when compared against a list of supported languages. If you set the languageIdentification property, then you must also set languageIdentification.candidateLocales with candidate locales.
+For more information, see Request configuration options.
+
+Make an HTTP POST request that uses the URI as shown in the following Transcriptions_Create example.
+
+Replace YourSubscriptionKey with your Speech resource key.
+Replace YourServiceRegion with your Speech resource region.
+Set the request body properties as previously described.
+Azure CLI
+
+Copy
+
+Open Cloud Shell
+curl -v -X POST -H "Ocp-Apim-Subscription-Key: YourSubscriptionKey" -H "Content-Type: application/json" -d '{
+  "contentUrls": [
+    "https://crbn.us/hello.wav",
+    "https://crbn.us/whatstheweatherlike.wav"
+  ],
+  "locale": "en-US",
+  "displayName": "My Transcription",
+  "model": null,
+  "properties": {
+    "wordLevelTimestampsEnabled": true,
+    "languageIdentification": {
+      "candidateLocales": [
+        "en-US", "de-DE", "es-ES"
+      ],
+    }
+  },
+}'  "https://YourServiceRegion.api.cognitive.microsoft.com/speechtotext/v3.2/transcriptions"
+You should receive a response body in the following format:
+
+JSON
+
+Copy
+{
+  "self": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/transcriptions/db474955-ab85-4c6c-ba6e-3bfe63d041ba",
+  "model": {
+    "self": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/models/base/5988d691-0893-472c-851e-8e36a0fe7aaf"
+  },
+  "links": {
+    "files": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/transcriptions/db474955-ab85-4c6c-ba6e-3bfe63d041ba/files"
+  },
+  "properties": {
+    "diarizationEnabled": false,
+    "wordLevelTimestampsEnabled": true,
+    "channels": [
+      0,
+      1
+    ],
+    "punctuationMode": "DictatedAndAutomatic",
+    "profanityFilterMode": "Masked",
+    "languageIdentification": {
+      "candidateLocales": [
+        "en-US",
+        "de-DE",
+        "es-ES"
+      ]
+    }
+  },
+  "lastActionDateTime": "2024-05-21T14:18:06Z",
+  "status": "NotStarted",
+  "createdDateTime": "2024-05-21T14:18:06Z",
+  "locale": "en-US",
+  "displayName": "My Transcription"
+}
+The top-level self property in the response body is the transcription's URI. Use this URI to get details such as the URI of the transcriptions and transcription report files. You also use this URI to update or delete a transcription.
+
+You can query the status of your transcriptions with the Transcriptions_Get operation.
+
+Call Transcriptions_Delete regularly from the service, after you retrieve the results. Alternatively, set the timeToLive property to ensure the eventual deletion of the results.
+
+ Tip
+
+You can also try the Batch Transcription API using Python, C#, or Node.js on GitHub.
+
+Request configuration options
+Here are some property options to configure a transcription when you call the Transcriptions_Create operation. You can find more examples on the same page, such as creating a transcription with language identification.
+
+Property	Description
+channels	An array of channel numbers to process. Channels 0 and 1 are transcribed by default.
+contentContainerUrl	You can submit individual audio files or a whole storage container.
+
+You must specify the audio data location by using either the contentContainerUrl or contentUrls property. For more information about Azure blob storage for batch transcription, see Locate audio files for batch transcription.
+
+This property isn't returned in the response.
+contentUrls	You can submit individual audio files or a whole storage container.
+
+You must specify the audio data location by using either the contentContainerUrl or contentUrls property. For more information, see Locate audio files for batch transcription.
+
+This property isn't returned in the response.
+destinationContainerUrl	The result can be stored in an Azure container. If you don't specify a container, the Speech service stores the results in a container managed by Microsoft. When the transcription job is deleted, the transcription result data is also deleted. For more information, such as the supported security scenarios, see Specify a destination container URL.
+diarization	Indicates that the Speech service should attempt diarization analysis on the input, which is expected to be a mono channel that contains multiple voices. The feature isn't available with stereo recordings.
+
+Diarization is the process of separating speakers in audio data. The batch pipeline can recognize and separate multiple speakers on mono channel recordings.
+
+Specify the minimum and maximum number of people who might be speaking. You must also set the diarizationEnabled property to true. The transcription file contains a speaker entry for each transcribed phrase.
+
+You need to use this property when you expect three or more speakers. For two speakers, setting diarizationEnabled property to true is enough. For an example of the property usage, see Transcriptions_Create.
+
+The maximum number of speakers for diarization must be less than 36 and more or equal to the minCount property. For an example, see Transcriptions_Create.
+
+When this property is selected, source audio length can't exceed 240 minutes per file.
+
+Note: This property is only available with Speech to text REST API version 3.1 and later. If you set this property with any previous version, such as version 3.0, it's ignored and only two speakers are identified.
+diarizationEnabled	Specifies that the Speech service should attempt diarization analysis on the input, which is expected to be a mono channel that contains two voices. The default value is false.
+
+For three or more voices you also need to use property diarization. Use only with Speech to text REST API version 3.1 and later.
+
+When this property is selected, source audio length can't exceed 240 minutes per file.
+displayName	The name of the batch transcription. Choose a name that you can refer to later. The display name doesn't have to be unique.
+
+This property is required.
+displayFormWordLevelTimestampsEnabled	Specifies whether to include word-level timestamps on the display form of the transcription results. The results are returned in the displayWords property of the transcription file. The default value is false.
+
+Note: This property is only available with Speech to text REST API version 3.1 and later.
+languageIdentification	Language identification is used to identify languages spoken in audio when compared against a list of supported languages.
+
+If you set the languageIdentification property, then you must also set its enclosed candidateLocales property.
+languageIdentification.candidateLocales	The candidate locales for language identification, such as "properties": { "languageIdentification": { "candidateLocales": ["en-US", "de-DE", "es-ES"]}}. A minimum of two and a maximum of ten candidate locales, including the main locale for the transcription, is supported.
+locale	The locale of the batch transcription. This value should match the expected locale of the audio data to transcribe. The locale can't be changed later.
+
+This property is required.
+model	You can set the model property to use a specific base model or custom speech model. If you don't specify the model, the default base model for the locale is used. For more information, see Use a custom model and Use a Whisper model.
+profanityFilterMode	Specifies how to handle profanity in recognition results. Accepted values are None to disable profanity filtering, Masked to replace profanity with asterisks, Removed to remove all profanity from the result, or Tags to add profanity tags. The default value is Masked.
+punctuationMode	Specifies how to handle punctuation in recognition results. Accepted values are None to disable punctuation, Dictated to imply explicit (spoken) punctuation, Automatic to let the decoder deal with punctuation, or DictatedAndAutomatic to use dictated and automatic punctuation. The default value is DictatedAndAutomatic.
+
+This property isn't applicable for Whisper models.
+timeToLive	A duration after the transcription job is created, when the transcription results will be automatically deleted. The value is an ISO 8601 encoded duration. For example, specify PT12H for 12 hours. As an alternative, you can call Transcriptions_Delete regularly after you retrieve the transcription results.
+wordLevelTimestampsEnabled	Specifies if word level timestamps should be included in the output. The default value is false.
+
+This property isn't applicable for Whisper models. Whisper is a display-only model, so the lexical field isn't populated in the transcription.
+Use a custom model
+Batch transcription uses the default base model for the locale that you specify. You don't need to set any properties to use the default base model.
+
+Optionally, you can modify the previous create transcription example by setting the model property to use a specific base model or custom speech model.
+
+Azure CLI
+
+Copy
+
+Open Cloud Shell
+curl -v -X POST -H "Ocp-Apim-Subscription-Key: YourSubscriptionKey" -H "Content-Type: application/json" -d '{
+  "contentUrls": [
+    "https://crbn.us/hello.wav",
+    "https://crbn.us/whatstheweatherlike.wav"
+  ],
+  "locale": "en-US",
+  "displayName": "My Transcription",
+  "model": {
+    "self": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/models/base/5988d691-0893-472c-851e-8e36a0fe7aaf"
+  },
+  "properties": {
+    "wordLevelTimestampsEnabled": true,
+  }
+}'  "https://YourServiceRegion.api.cognitive.microsoft.com/speechtotext/v3.2/transcriptions"
+To use a custom speech model for batch transcription, you need the model's URI. The top-level self property in the response body is the model's URI. You can retrieve the model location when you create or get a model. For more information, see the JSON response example in Create a model.
+
+ Tip
+
+A hosted deployment endpoint isn't required to use custom speech with the batch transcription service. You can conserve resources if you use the custom speech model only for batch transcription.
+
+Batch transcription requests for expired models fail with a 4xx error. Set the model property to a base model or custom model that isn't expired. Otherwise don't include the model property to always use the latest base model. For more information, see Choose a model and Custom speech model lifecycle.
+
+Use a Whisper model
+Azure AI Speech supports OpenAI's Whisper model by using the batch transcription API. You can use the Whisper model for batch transcription.
+
+ Note
+
+Azure OpenAI Service also supports OpenAI's Whisper model for speech to text with a synchronous REST API. To learn more, see Speech to text with the Azure OpenAI Whisper model. For more information about when to use Azure AI Speech vs. Azure OpenAI Service, see What is the Whisper model?
+
+To use a Whisper model for batch transcription, you need to set the model property. Whisper is a display-only model, so the lexical field isn't populated in the response.
+
+ Important
+
+Batch transcription using Whisper models is available in the following regions: Australia East, East US, Japan East, North Central US, South Central US, Southeast Asia, UK South, and West Europe.
+
+You can make a Models_ListBaseModels request to get available base models for all locales.
+
+Make an HTTP GET request as shown in the following example for the eastus region. Replace YourSubscriptionKey with your Speech resource key. Replace eastus if you're using a different region.
+
+Azure CLI
+
+Copy
+
+Open Cloud Shell
+curl -v -X GET "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/models/base" -H "Ocp-Apim-Subscription-Key: YourSubscriptionKey"
+By default, only the 100 oldest base models are returned. Use the skip and top query parameters to page through the results. For example, the following request returns the next 100 base models after the first 100.
+
+Azure CLI
+
+Copy
+
+Open Cloud Shell
+curl -v -X GET "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/models/base?skip=100&top=100" -H "Ocp-Apim-Subscription-Key: YourSubscriptionKey"
+The displayName property of a Whisper model contains "Whisper" as shown in this example. Whisper is a display-only model, so the lexical field isn't populated in the transcription.
+
+JSON
+
+Copy
+{
+  "self": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/models/base/e418c4a9-9937-4db7-b2c9-8afbff72d950",
+  "links": {
+    "manifest": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/models/base/e418c4a9-9937-4db7-b2c9-8afbff72d950/manifest"
+  },
+  "properties": {
+    "deprecationDates": {
+      "adaptationDateTime": "2025-04-15T00:00:00Z",
+      "transcriptionDateTime": "2026-04-15T00:00:00Z"
+    },
+    "features": {
+      "supportsTranscriptions": true,
+      "supportsEndpoints": false,
+      "supportsTranscriptionsOnSpeechContainers": false,
+      "supportsAdaptationsWith": [
+        "Acoustic"
+      ],
+      "supportedOutputFormats": [
+        "Display"
+      ]
+    },
+    "chargeForAdaptation": true
+  },
+  "lastActionDateTime": "2024-02-29T15:53:28Z",
+  "status": "Succeeded",
+  "createdDateTime": "2024-02-29T15:46:07Z",
+  "locale": "en-US",
+  "displayName": "20240228 Whisper Large V2",
+  "description": "OpenAI Whisper Model in Azure AI Speech (Whisper v2-large)"
+},
+You set the full model URI as shown in this example for the eastus region. Replace YourSubscriptionKey with your Speech resource key. Replace eastus if you're using a different region.
+
+Azure CLI
+
+Copy
+
+Open Cloud Shell
+curl -v -X POST -H "Ocp-Apim-Subscription-Key: YourSubscriptionKey" -H "Content-Type: application/json" -d '{
+  "contentUrls": [
+    "https://crbn.us/hello.wav",
+    "https://crbn.us/whatstheweatherlike.wav"
+  ],
+  "locale": "en-US",
+  "displayName": "My Transcription",
+  "model": {
+    "self": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/models/base/e418c4a9-9937-4db7-b2c9-8afbff72d950"
+  },
+  "properties": {
+    "wordLevelTimestampsEnabled": true,
+  },
+}'  "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/transcriptions"
+Specify a destination container URL
+The transcription result can be stored in an Azure container. If you don't specify a container, the Speech service stores the results in a container managed by Microsoft. In that case, when the transcription job is deleted, the transcription result data is also deleted.
+
+You can store the results of a batch transcription to a writable Azure Blob storage container using option destinationContainerUrl in the batch transcription creation request. This option uses only an ad hoc SAS URI and doesn't support Trusted Azure services security mechanism. This option also doesn't support Access policy based SAS. The Storage account resource of the destination container must allow all external traffic.
+
+If you want to store the transcription results in an Azure Blob storage container by using the Trusted Azure services security mechanism, consider using Bring-your-own-storage (BYOS). For more information, see Use the Bring your own storage (BYOS) Speech resource for speech to text.
+
+part -3 
+Get batch transcription results
+Article
+03/10/2025
+4 contributors
+Choose a tool or API
+In this article
+Get transcription status
+Get transcription results
+Next steps
+To get transcription results, first check the status of the transcription job. If the job is completed, you can retrieve the transcriptions and transcription report.
+
+Get transcription status
+To get the status of the transcription job, call the Transcriptions_Get operation of the Speech to text REST API.
+
+ Important
+
+Batch transcription jobs are scheduled on a best-effort basis. At peak hours, it may take up to 30 minutes or longer for a transcription job to start processing. Most of the time during the execution the transcription status will be Running. This is because the job is assigned the Running status the moment it moves to the batch transcription backend system. When the base model is used, this assignment happens almost immediately; it's slightly slower for custom models. Thus, the amount of time a transcription job spends in the Running state doesn't correspond to the actual transcription time but also includes waiting time in the internal queues.
+
+Make an HTTP GET request using the URI as shown in the following example. Replace YourTranscriptionId with your transcription ID, replace YourSubscriptionKey with your Speech resource key, and replace YourServiceRegion with your Speech resource region.
+
+Azure CLI
+
+Copy
+
+Open Cloud Shell
+curl -v -X GET "https://YourServiceRegion.api.cognitive.microsoft.com/speechtotext/v3.2/transcriptions/YourTranscriptionId" -H "Ocp-Apim-Subscription-Key: YourSubscriptionKey"
+You should receive a response body in the following format:
+
+JSON
+
+Copy
+{
+  "self": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/transcriptions/637d9333-6559-47a6-b8de-c7d732c1ddf3",
+  "model": {
+    "self": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/models/base/aaa321e9-5a4e-4db1-88a2-f251bbe7b555"
+  },
+  "links": {
+    "files": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/transcriptions/637d9333-6559-47a6-b8de-c7d732c1ddf3/files"
+  },
+  "properties": {
+    "diarizationEnabled": false,
+    "wordLevelTimestampsEnabled": false,
+    "displayFormWordLevelTimestampsEnabled": true,
+    "channels": [
+      0,
+      1
+    ],
+    "punctuationMode": "DictatedAndAutomatic",
+    "profanityFilterMode": "Masked",
+    "duration": "PT3S",
+    "languageIdentification": {
+      "candidateLocales": [
+        "en-US",
+        "de-DE",
+        "es-ES"
+      ]
+    }
+  },
+  "lastActionDateTime": "2024-05-10T18:39:09Z",
+  "status": "Succeeded",
+  "createdDateTime": "2024-05-10T18:39:07Z",
+  "locale": "en-US",
+  "displayName": "My Transcription"
+}
+The status property indicates the current status of the transcriptions. The transcriptions and transcription report are available when the transcription status is Succeeded.
+
+Get transcription results
+The Transcriptions_ListFiles operation returns a list of result files for a transcription. A transcription report file is provided for each submitted batch transcription job. In addition, one transcription file (the end result) is provided for each successfully transcribed audio file.
+
+Make an HTTP GET request using the "files" URI from the previous response body. Replace YourTranscriptionId with your transcription ID, replace YourSubscriptionKey with your Speech resource key, and replace YourServiceRegion with your Speech resource region.
+
+Azure CLI
+
+Copy
+
+Open Cloud Shell
+curl -v -X GET "https://YourServiceRegion.api.cognitive.microsoft.com/speechtotext/v3.2/transcriptions/YourTranscriptionId/files" -H "Ocp-Apim-Subscription-Key: YourSubscriptionKey"
+You should receive a response body in the following format:
+
+JSON
+
+Copy
+{
+  "values": [
+    {
+      "self": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/transcriptions/637d9333-6559-47a6-b8de-c7d732c1ddf3/files/2dd180a1-434e-4368-a1ac-37350700284f",
+      "name": "contenturl_0.json",
+      "kind": "Transcription",
+      "properties": {
+        "size": 3407
+      },
+      "createdDateTime": "2024-05-10T18:39:09Z",
+      "links": {
+        "contentUrl": "YourTranscriptionUrl"
+      }
+    },
+    {
+      "self": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/transcriptions/637d9333-6559-47a6-b8de-c7d732c1ddf3/files/c027c6a9-2436-4303-b64b-e98e3c9fc2e3",
+      "name": "contenturl_1.json",
+      "kind": "Transcription",
+      "properties": {
+        "size": 8233
+      },
+      "createdDateTime": "2024-05-10T18:39:09Z",
+      "links": {
+        "contentUrl": "YourTranscriptionUrl"
+      }
+    },
+    {
+      "self": "https://eastus.api.cognitive.microsoft.com/speechtotext/v3.2/transcriptions/637d9333-6559-47a6-b8de-c7d732c1ddf3/files/faea9a41-c95c-4d91-96ff-e39225def642",
+      "name": "report.json",
+      "kind": "TranscriptionReport",
+      "properties": {
+        "size": 279
+      },
+      "createdDateTime": "2024-05-10T18:39:09Z",
+      "links": {
+        "contentUrl": "YourTranscriptionReportUrl"
+      }
+    }
+  ]
+}
+The location of each transcription and transcription report files with more details are returned in the response body. The contentUrl property contains the URL to the transcription ("kind": "Transcription") or transcription report ("kind": "TranscriptionReport") file.
+
+If you didn't specify a container in the destinationContainerUrl property of the transcription request, the results are stored in a container managed by Microsoft. When the transcription job is deleted, the transcription result data is also deleted.
+
+Transcription report file
+One transcription report file is provided for each submitted batch transcription job.
+
+The contents of each transcription result file are formatted as JSON, as shown in this example.
+
+JSON
+
+Copy
+{
+  "successfulTranscriptionsCount": 2,
+  "failedTranscriptionsCount": 0,
+  "details": [
+    {
+      "source": "https://crbn.us/hello.wav",
+      "status": "Succeeded"
+    },
+    {
+      "source": "https://crbn.us/whatstheweatherlike.wav",
+      "status": "Succeeded"
+    }
+  ]
+}
+Transcription result file
+One transcription result file is provided for each successfully transcribed audio file.
+
+The contents of each transcription result file are formatted as JSON, as shown in this example.
+
+JSON
+
+Copy
+{
+  "source": "...",
+  "timestamp": "2023-07-10T14:28:16Z",
+  "durationInTicks": 25800000,
+  "duration": "PT2.58S",
+  "combinedRecognizedPhrases": [
+    {
+      "channel": 0,
+      "lexical": "hello world",
+      "itn": "hello world",
+      "maskedITN": "hello world",
+      "display": "Hello world."
+    }
+  ],
+  "recognizedPhrases": [
+    {
+      "recognitionStatus": "Success",
+      "channel": 0,
+      "offset": "PT0.76S",
+      "duration": "PT1.32S",
+      "offsetInTicks": 7600000.0,
+      "durationInTicks": 13200000.0,
+      "nBest": [
+        {
+          "confidence": 0.5643338,
+          "lexical": "hello world",
+          "itn": "hello world",
+          "maskedITN": "hello world",
+          "display": "Hello world.",
+          "displayWords": [
+            {
+              "displayText": "Hello",
+              "offset": "PT0.76S",
+              "duration": "PT0.76S",
+              "offsetInTicks": 7600000.0,
+              "durationInTicks": 7600000.0
+            },
+            {
+              "displayText": "world.",
+              "offset": "PT1.52S",
+              "duration": "PT0.56S",
+              "offsetInTicks": 15200000.0,
+              "durationInTicks": 5600000.0
+            }
+          ]
+        },
+        {
+          "confidence": 0.1769063,
+          "lexical": "helloworld",
+          "itn": "helloworld",
+          "maskedITN": "helloworld",
+          "display": "helloworld"
+        },
+        {
+          "confidence": 0.49964225,
+          "lexical": "hello worlds",
+          "itn": "hello worlds",
+          "maskedITN": "hello worlds",
+          "display": "hello worlds"
+        },
+        {
+          "confidence": 0.4995761,
+          "lexical": "hello worm",
+          "itn": "hello worm",
+          "maskedITN": "hello worm",
+          "display": "hello worm"
+        },
+        {
+          "confidence": 0.49418187,
+          "lexical": "hello word",
+          "itn": "hello word",
+          "maskedITN": "hello word",
+          "display": "hello word"
+        }
+      ]
+    }
+  ]
+}
+Depending in part on the request parameters set when you created the transcription job, the transcription file can contain the following result properties.
+
+Property	Description
+channel	The channel number of the results. For stereo audio streams, the left and right channels are split during the transcription. A JSON result file is created for each input audio file.
+combinedRecognizedPhrases	The concatenated results of all phrases for the channel.
+confidence	The confidence value for the recognition.
+display	The display form of the recognized text. Added punctuation and capitalization are included.
+displayWords	The timestamps for each word of the transcription. The displayFormWordLevelTimestampsEnabled request property must be set to true, otherwise this property isn't present.
+
+Note: This property is only available with Speech to text REST API version 3.1 and later.
+duration	The audio duration. The value is an ISO 8601 encoded duration.
+durationInTicks	The audio duration in ticks (one tick is 100 nanoseconds).
+itn	The inverse text normalized (ITN) form of the recognized text. Abbreviations such as "Doctor Smith" to "Dr Smith", phone numbers, and other transformations are applied.
+lexical	The actual words recognized.
+locale	The locale identified from the input the audio. The languageIdentification request property must be set, otherwise this property isn't present.
+
+Note: This property is only available with Speech to text REST API version 3.1 and later.
+maskedITN	The ITN form with profanity masking applied.
+nBest	A list of possible transcriptions for the current phrase with confidences.
+offset	The offset in audio of this phrase. The value is an ISO 8601 encoded duration.
+offsetInTicks	The offset in audio of this phrase in ticks (one tick is 100 nanoseconds).
+recognitionStatus	The recognition state. For example: "Success" or "Failure".
+recognizedPhrases	The list of results for each phrase.
+source	The URL that was provided as the input audio source. The source corresponds to the contentUrls or contentContainerUrl request property. The source property is the only way to confirm the audio input for a transcription.
+speaker	The identified speaker. The diarization and diarizationEnabled request properties must be set, otherwise this property isn't present.
+timestamp	The creation date and time of the transcription. The value is an ISO 8601 encoded timestamp.
+words	A list of results with lexical text for each word of the phrase. The wordLevelTimestampsEnabled request property must be set to true, otherwise this property isn't present.
+
+automation
+Power automate batch transcription
+Article
+03/10/2025
+2 contributors
+In this article
+Prerequisites
+Create the Azure Blob Storage container
+Create a Power Automate flow
+Upload files to the container
+Show 2 more
+This article describes how to use Power Automate and the Azure AI services for Batch Speech to text connector to transcribe audio files from an Azure Storage container. The connector uses the Batch Transcription REST API, but you don't need to write any code to use it. If the connector doesn't meet your requirements, you can still use the REST API directly.
+
+In addition to Power Automate, you can use the Azure AI services for Batch Speech to text connector with Power Apps and Logic Apps.
+
+ Tip
+
+Try more Speech features in Speech Studio without signing up or writing any code.
+
+Prerequisites
+An Azure subscription. You can create one for free.
+Create an AI Services resource for Speech in the Azure portal.
+Get the Speech resource key and region. After your Speech resource is deployed, select Go to resource to view and manage keys.
+Create the Azure Blob Storage container
+In this example, you transcribe audio files that are located in an Azure Blob Storage account.
+
+Follow these steps to create a new storage account and container.
+
+Go to the Azure portal and sign in to your Azure account.
+Create a Storage account resource in the Azure portal. Use the same subscription and resource group as your Speech resource.
+Select the Storage account.
+In the Data storage group in the left pane, select Containers.
+Select + Container.
+Enter a name for the new container such as "batchtranscription" and select Create.
+Select Access keys in the Security + networking group in the left pane. View and take note of the key1 (or key2) value. You need the access key later when you configure the connector.
+Later you'll upload files to the container after the connector is configured, since the events of adding and modifying files kick off the transcription process.
+
+Create a Power Automate flow
+The steps to create your power automate flow are:
+
+Create a new flow
+Configure the flow trigger
+Create SAS URI by path
+Create transcription
+Test the flow
+Create a new flow
+To create a new flow, follow these steps:
+
+Sign in to power automate
+
+From the collapsible menu on the left, select Create.
+
+Select Automated cloud flow to start from a blank flow that can be triggered by a designated event.
+
+A screenshot of the menu for creating an automated cloud flow.
+
+In the Build an automated cloud flow dialog, enter a name for your flow such as "BatchSTT".
+
+Select Skip to exit the dialog and continue without choosing a trigger.
+
+Configure the flow trigger
+To configure the flow trigger, follow these steps:
+
+Select Add a trigger to configure the event that starts the flow.
+
+Choose a trigger from the Azure Blob Storage connector. For this example, enter "blob" in the search connectors and triggers box to narrow the results.
+
+Under the Azure Blob Storage connector, select the When a blob is added or modified trigger.
+
+A screenshot of the search connectors and triggers dialog.
+
+Configure the Azure Blob Storage connection.
+
+From the Authentication type drop-down list, select Access Key.
+Enter the account name and access key of the Azure Storage account that you created previously.
+Select Create new to continue.
+Configure the When a blob is added or modified trigger.
+
+A screenshot of the dialog to configure the blob trigger.
+
+From the Storage account name or blob endpoint drop-down list, select Use connection settings. You should see the storage account name as a component of the connection string.
+Under Container select the folder icon. Choose the container that you created previously.
+Create SAS URI by path
+To transcribe an audio file that's in your Azure Blob Storage container, you need a Shared Access Signature (SAS) URI for the file.
+
+The Azure Blob Storage connector supports SAS URIs for individual blobs, but not for entire containers.
+
+To create a SAS URI for a blob, follow these steps:
+
+Select + New step to begin adding a new operation for the Azure Blob Storage connector.
+Enter "blob" in the search connectors and actions box to narrow the results.
+Under the Azure Blob Storage connector, select the Create SAS URI by path trigger.
+Under the Storage account name or blob endpoint drop-down, choose the same connection that you used for the When a blob is added or modified trigger.
+Select Path as dynamic content for the Blob path field.
+By now, you should have a flow that looks like this:
+
+A screenshot of the flow status after create SAS URI.
+
+Create transcription
+To create a transcription, follow these steps:
+
+Select + New step to begin adding a new operation for the batch speech to text connector.
+
+Enter "batch speech to text" in the search connectors and actions box to narrow the results.
+
+Select the Azure AI services for Batch Speech to text connector.
+
+Select the Create transcription action.
+
+Create a new connection to the Speech resource that you created previously. The connection is available throughout the Power Automate environment. For more information, see Manage connections in Power Automate.
+
+Enter a name for the connection such as "speech-resource-key". You can choose any name that you like.
+In the API Key field, enter the Speech resource key.
+Optionally you can select the connector ellipses (...) to view available connections. If you weren't prompted to create a connection, then you already have a connection that's selected by default.
+
+A screenshot of the view connections dialog.
+
+Configure the Create transcription action.
+
+In the locale field, enter the expected locale of the audio data to transcribe.
+Select DisplayName as dynamic content for the displayName field. You can choose any name that you would like to refer to later.
+Select Web Url as dynamic content for the contentUrls Item - 1 field. This is the SAS URI output from the Create SAS URI by path action.
+ Tip
+
+For more information about create transcription parameters, see the Azure AI services for Batch Speech to text documentation.
+
+From the top navigation menu, select Save.
+
+Test the flow
+To test the flow, follow these steps:
+
+From the top navigation menu, select Flow checker. In the side panel that appears, you shouldn't see any errors or warnings. If you do, then you should fix them before continuing.
+From the top navigation menu, save the flow and select Test the flow. In the window that appears, select Test.
+In the side panel that appears, select Manually and then select Test.
+After a few seconds, you should see an indication that the flow is in progress.
+
+A screenshot of the flow in progress icon.
+
+The flow is waiting for a file to be added or modified in the Azure Blob Storage container. That's the trigger that you configured earlier.
+
+To trigger the test flow, upload an audio file to the Azure Blob Storage container as described next.
+
+Upload files to the container
+Follow these steps to upload wav, mp3, or ogg files from your local directory to the Azure Storage container that you created previously.
+
+Go to the Azure portal and sign in to your Azure account.
+Create a Storage account resource in the Azure portal. Use the same subscription and resource group as your Speech resource.
+Select the Storage account.
+Select the new container.
+Select Upload.
+Choose the files to upload and select Upload.
+View the transcription flow results
+After you upload the audio file to the Azure Blob Storage container, the flow should run and complete. Return to your test flow in the Power Automate portal to view the results.
+
+A screenshot of all steps of the flow succeeded.
+
+You can select and expand the Create transcription to see detailed input and output results.

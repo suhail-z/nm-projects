@@ -1,0 +1,241 @@
+QuickStart: Analyze text content
+Article
+01/23/2025
+5 contributors
+Choose a platform
+In this article
+Prerequisites
+Create environment variables
+Analyze text content
+Clean up resources
+Related content
+Get started with the Content Safety Studio, REST API, or client SDKs to do basic text moderation. The Azure AI Content Safety service provides you with AI algorithms for flagging objectionable content. Follow these steps to try it out.
+
+For more information on text moderation, see the Harm categories concept page. For API input limits, see the Input requirements section of the Overview.
+
+ Caution
+
+The sample data and code may contain offensive content. User discretion is advised.
+
+Reference documentation | Library source code | Package (PyPI) | Samples |
+
+Prerequisites
+An Azure subscription - Create one for free
+Once you have your Azure subscription, create a Content Safety resource in the Azure portal to get your key and endpoint. Enter a unique name for your resource, select your subscription, and select a resource group, supported region (see Region availability), and supported pricing tier. Then select Create.
+The resource takes a few minutes to deploy. After it finishes, Select go to resource. In the left pane, under Resource Management, select Subscription Key and Endpoint. The endpoint and either of the keys are used to call APIs.
+Python 3.x
+Your Python installation should include pip. You can check if you have pip installed by running pip --version on the command line. Get pip by installing the latest version of Python.
+Create environment variables
+In this example, you'll write your credentials to environment variables on the local machine running the application.
+
+To set the environment variable for your key and endpoint, open a console window and follow the instructions for your operating system and development environment.
+
+To set the CONTENT_SAFETY_KEY environment variable, replace YOUR_CONTENT_SAFETY_KEY with one of the keys for your resource.
+To set the CONTENT_SAFETY_ENDPOINT environment variable, replace YOUR_CONTENT_SAFETY_ENDPOINT with the endpoint for your resource.
+ Important
+
+Use API keys with caution. Don't include the API key directly in your code, and never post it publicly. If you use an API key, store it securely in Azure Key Vault. For more information about using API keys securely in your apps, see API keys with Azure Key Vault.
+
+For more information about AI services security, see Authenticate requests to Azure AI services.
+
+Windows
+Linux
+Console
+
+Copy
+setx CONTENT_SAFETY_KEY 'YOUR_CONTENT_SAFETY_KEY'
+Console
+
+Copy
+setx CONTENT_SAFETY_ENDPOINT 'YOUR_CONTENT_SAFETY_ENDPOINT'
+After you add the environment variables, you might need to restart any running programs that will read the environment variables, including the console window.
+
+Analyze text content
+The following section walks through a sample request with the Python SDK.
+
+Open a command prompt, navigate to your project folder, and create a new file named quickstart.py.
+
+Run this command to install the Azure AI Content Safety library:
+
+Console
+
+Copy
+pip install azure-ai-contentsafety
+Copy the following code into quickstart.py:
+
+Python
+
+Copy
+import os
+from azure.ai.contentsafety import ContentSafetyClient
+from azure.core.credentials import AzureKeyCredential
+from azure.core.exceptions import HttpResponseError
+from azure.ai.contentsafety.models import AnalyzeTextOptions, TextCategory
+
+def analyze_text():
+    # analyze text
+    key = os.environ["CONTENT_SAFETY_KEY"]
+    endpoint = os.environ["CONTENT_SAFETY_ENDPOINT"]
+
+    # Create an Azure AI Content Safety client
+    client = ContentSafetyClient(endpoint, AzureKeyCredential(key))
+
+    # Contruct request
+    request = AnalyzeTextOptions(text="Your input text")
+
+    # Analyze text
+    try:
+        response = client.analyze_text(request)
+    except HttpResponseError as e:
+        print("Analyze text failed.")
+        if e.error:
+            print(f"Error code: {e.error.code}")
+            print(f"Error message: {e.error.message}")
+            raise
+        print(e)
+        raise
+
+    hate_result = next(item for item in response.categories_analysis if item.category == TextCategory.HATE)
+    self_harm_result = next(item for item in response.categories_analysis if item.category == TextCategory.SELF_HARM)
+    sexual_result = next(item for item in response.categories_analysis if item.category == TextCategory.SEXUAL)
+    violence_result = next(item for item in response.categories_analysis if item.category == TextCategory.VIOLENCE)
+
+    if hate_result:
+        print(f"Hate severity: {hate_result.severity}")
+    if self_harm_result:
+        print(f"SelfHarm severity: {self_harm_result.severity}")
+    if sexual_result:
+        print(f"Sexual severity: {sexual_result.severity}")
+    if violence_result:
+        print(f"Violence severity: {violence_result.severity}")
+
+if __name__ == "__main__":
+    analyze_text()
+Replace "Your input text" with the text content you'd like to use.
+
+ Tip
+
+Text size and granularity
+
+See Input requirements for maximum text length limitations.
+
+Then run the application with the python command on your quickstart file.
+
+Console
+
+Copy
+python quickstart.py
+option-2::
+QuickStart: Analyze text content
+Article
+01/23/2025
+5 contributors
+Choose a platform
+In this article
+Prerequisites
+Analyze text content
+Output
+Clean up resources
+Related content
+Get started with the Content Safety Studio, REST API, or client SDKs to do basic text moderation. The Azure AI Content Safety service provides you with AI algorithms for flagging objectionable content. Follow these steps to try it out.
+
+For more information on text moderation, see the Harm categories concept page. For API input limits, see the Input requirements section of the Overview.
+
+ Caution
+
+The sample data and code may contain offensive content. User discretion is advised.
+
+Prerequisites
+An Azure subscription - Create one for free
+Once you have your Azure subscription, create a Content Safety resource in the Azure portal to get your key and endpoint. Enter a unique name for your resource, select your subscription, and select a resource group, supported region (see Region availability), and supported pricing tier. Then select Create.
+The resource takes a few minutes to deploy. After it finishes, Select go to resource. In the left pane, under Resource Management, select Subscription Key and Endpoint. The endpoint and either of the keys are used to call APIs.
+cURL installed
+Analyze text content
+The following section walks through a sample request with cURL. Paste the command below into a text editor, and make the following changes.
+
+Replace <endpoint> with the endpoint URL associated with your resource.
+Replace <your_subscription_key> with one of the keys that come with your resource.
+Optionally, replace the "text" field in the body with your own text you'd like to analyze.
+ Tip
+
+Text size and granularity
+
+See Input requirements for maximum text length limitations.
+
+shell
+
+Copy
+curl --location --request POST '<endpoint>/contentsafety/text:analyze?api-version=2024-09-01' \
+--header 'Ocp-Apim-Subscription-Key: <your_subscription_key>' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "text": "I hate you",
+  "categories": ["Hate", "Sexual", "SelfHarm", "Violence"],
+  "blocklistNames": ["string"],
+  "haltOnBlocklistHit": true,
+  "outputType": "FourSeverityLevels"
+}'
+The below fields must be included in the url:
+
+Name	Required	Description	Type
+API Version	Required	This is the API version to be checked. The current version is: api-version=2024-09-01. Example: <endpoint>/contentsafety/text:analyze?api-version=2024-09-01	String
+The parameters in the request body are defined in this table:
+
+Name	Required	Description	Type
+text	Required	This is the raw text to be checked. Other non-ascii characters can be included.	String
+categories	Optional	This is assumed to be an array of category names. See the Harm categories guide for a list of available category names. If no categories are specified, all four categories are used. We use multiple categories to get scores in a single request.	String
+blocklistNames	Optional	Text blocklist Name. Only support following characters: 0-9 A-Z a-z - . _ ~. You could attach multiple list names here.	Array
+haltOnBlocklistHit	Optional	When set to true, further analyses of harmful content won't be performed in cases where blocklists are hit. When set to false, all analyses of harmful content will be performed, whether or not blocklists are hit.	Boolean
+outputType	Optional	"FourSeverityLevels" or "EightSeverityLevels". Output severities in four or eight levels, the value can be 0,2,4,6 or 0,1,2,3,4,5,6,7.	String
+See the following sample request body:
+
+JSON
+
+Copy
+{
+  "text": "I hate you",
+  "categories": ["Hate", "Sexual", "SelfHarm", "Violence"],
+  "blocklistNames": ["array"],
+  "haltOnBlocklistHit": false,
+  "outputType": "FourSeverityLevels"
+}
+Open a command prompt window, paste in the edited cURL command, and run it.
+
+Output
+You should see the text moderation results displayed as JSON data in the console output. For example:
+
+JSON
+
+Copy
+{
+  "blocklistsMatch": [
+    {
+      "blocklistName": "string",
+      "blocklistItemId": "string",
+      "blocklistItemText": "string"
+    }
+  ],
+  "categoriesAnalysis": [
+    {
+      "category": "Hate",
+      "severity": 2
+    },
+    {
+      "category": "SelfHarm",
+      "severity": 0
+    },
+    {
+      "category": "Sexual",
+      "severity": 0
+    },
+    {
+      "category": "Violence",
+      "severity": 0
+    }
+  ]
+}
+The JSON fields in the output are defined here:
+
+Name	Description	Type
+categoriesAnalysis	Each output class that the API predicts. Classification can be multi-labeled. For example, when a text sample is run through the text moderation model, it could be classified as both sexual content and violence. Harm categories	String
+Severity	The higher the severity of input content, the larger this value is.	Integer

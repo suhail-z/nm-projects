@@ -1,0 +1,231 @@
+
+{
+  "callHistory": [
+    {
+      "id": "call-123",
+      "date": "May 3, 2025",
+      "time": "14:30",
+      "agent": "Jane Smith",
+      "customer": "Robert Johnson",
+      "duration": "05:42",
+      "status": "compliant",
+      "score": 92,
+      "transcript": [
+        {"id": "1", "speaker": "agent", "text": "Thank you for calling customer support. My name is Jane. How can I help you today?", "time": "00:00"},
+        {"id": "2", "speaker": "customer", "text": "Hi, I need to update my billing information for my account.", "time": "00:05"},
+        {"id": "3", "speaker": "agent", "text": "I'd be happy to help you with that. For verification purposes, can you please confirm your full name and email address?", "time": "00:10"},
+        {"id": "4", "speaker": "customer", "text": "Robert Johnson, email is robert.johnson@example.com", "time": "00:17"},
+        {"id": "5", "speaker": "agent", "text": "Thank you for verifying. I can now access your account. What would you like to update in your billing information?", "time": "00:25"},
+        {"id": "6", "speaker": "customer", "text": "I need to update my credit card since the old one expired.", "time": "00:32"},
+        {"id": "7", "speaker": "agent", "text": "I understand. I'll guide you through the process. You have the option to update it through our secure payment portal. Would you like me to send you a link?", "time": "00:40"},
+        {"id": "8", "speaker": "customer", "text": "Yes, that would be great.", "time": "00:52"},
+        {"id": "9", "speaker": "agent", "text": "Perfect. I've sent the secure link to your email. Once you update your card, it will be reflected immediately in our system. Is there anything else I can help you with today?", "time": "00:55"},
+        {"id": "10", "speaker": "customer", "text": "No, that's all I needed. Thank you for your help.", "time": "01:15"},
+        {"id": "11", "speaker": "agent", "text": "You're welcome, Mr. Johnson. Thank you for contacting our support team. Have a wonderful day!", "time": "01:20"}
+      ],
+      "complianceItems": [
+        {"id": "1", "category": "Identity Verification", "requirement": "Verify customer identity", "status": "compliant", "details": "Agent properly verified name and email", "timestamp": "00:10"},
+        {"id": "2", "category": "Data Security", "requirement": "Secure handling of payment info", "status": "compliant", "details": "Agent used secure portal for payment update", "timestamp": "00:40"},
+        {"id": "3", "category": "Customer Communication", "requirement": "Professional greeting", "status": "compliant", "details": "Agent introduced herself and offered help", "timestamp": "00:00"},
+        {"id": "4", "category": "Call Resolution", "requirement": "Issue resolution", "status": "compliant", "details": "Customer's billing information update was addressed", "timestamp": "00:55"}
+      ],
+      "analytics": {
+        "agentTalkTime": 65,
+        "customerTalkTime": 35,
+        "agentTone": 94,
+        "customerSentiment": 88,
+        "silencePeriods": 2,
+        "interruptionCount": 0,
+        "keyPhrases": ["billing information", "credit card", "secure", "verification"]
+      }
+    },
+    {
+      "id": "call-122",
+      "date": "May 3, 2025",
+      "time": "11:15",
+      "agent": "John Doe",
+      "customer": "Sarah Williams",
+      "duration": "08:19",
+      "status": "warning",
+      "score": 78,
+      "transcript": [
+        {"id": "1", "speaker": "agent", "text": "Hello, this is John with customer support. How can I assist you?", "time": "00:00"},
+        {"id": "2", "speaker": "customer", "text": "Hi John, I'm having trouble accessing my account. It keeps saying my password is incorrect, but I'm sure I'm using the right one.", "time": "00:04"},
+        {"id": "3", "speaker": "agent", "text": "I understand how frustrating that can be. Let me help you with that. Can you confirm your username or email address?", "time": "00:18"},
+        {"id": "4", "speaker": "customer", "text": "It's sarah.williams@example.com", "time": "00:28"},
+        {"id": "5", "speaker": "agent", "text": "Thank you. Let me check your account status. One moment please.", "time": "00:32"},
+        {"id": "6", "speaker": "agent", "text": "I can see your account is active but it looks like there were multiple failed login attempts. For security reasons, we may need to reset your password. Would that be okay?", "time": "00:45"},
+        {"id": "7", "speaker": "customer", "text": "Yes, that would be fine.", "time": "00:58"},
+        {"id": "8", "speaker": "agent", "text": "Great. I'll need to verify your identity first. Could you please confirm your phone number and home address?", "time": "01:03"},
+        {"id": "9", "speaker": "customer", "text": "My phone number is 555-123-4567 and my address is 123 Main Street, Apt 4B, Boston.", "time": "01:12"},
+        {"id": "10", "speaker": "agent", "text": "Perfect. I'll send a password reset link to your email. You should receive it within a few minutes. Is there anything else you need help with while we're on the call?", "time": "01:25"},
+        {"id": "11", "speaker": "customer", "text": "Actually, yes. Could you tell me if there are any promotions currently available for my subscription plan?", "time": "01:36"},
+        {"id": "12", "speaker": "agent", "text": "Certainly. Let me check that for you. Hmm, I don't see any specific promotions for your current plan, but if you upgrade to our premium tier, you can get a 20% discount for the first three months.", "time": "01:43"},
+        {"id": "13", "speaker": "customer", "text": "How much would that cost?", "time": "02:10"},
+        {"id": "14", "speaker": "agent", "text": "The premium plan is normally $29.99 per month, but with the discount, it would be $23.99 per month for the first three months. After that, it would return to the regular price.", "time": "02:13"},
+        {"id": "15", "speaker": "customer", "text": "That's a bit more than I wanted to spend. I think I'll just stick with my current plan for now.", "time": "02:30"},
+        {"id": "16", "speaker": "agent", "text": "No problem at all. Your current plan is still excellent value. By the way, have you received the password reset email yet?", "time": "02:38"},
+        {"id": "17", "speaker": "customer", "text": "Let me check... Yes, I just got it. I'll reset my password after our call.", "time": "02:48"},
+        {"id": "18", "speaker": "agent", "text": "Perfect. Is there anything else I can help you with today?", "time": "02:58"},
+        {"id": "19", "speaker": "customer", "text": "No, that's everything. Thank you for your help.", "time": "03:02"},
+        {"id": "20", "speaker": "agent", "text": "You're welcome. Thank you for contacting customer support. Have a great day!", "time": "03:06"}
+      ],
+      "complianceItems": [
+        {"id": "1", "category": "Identity Verification", "requirement": "Verify customer identity", "status": "compliant", "details": "Agent verified email and personal information", "timestamp": "00:32"},
+        {"id": "2", "category": "Data Security", "requirement": "Collect only necessary information", "status": "warning", "details": "Agent requested home address which wasn't necessary for password reset", "timestamp": "01:03"},
+        {"id": "3", "category": "Customer Communication", "requirement": "Clear pricing information", "status": "compliant", "details": "Agent clearly explained pricing structure", "timestamp": "02:13"},
+        {"id": "4", "category": "Call Resolution", "requirement": "Issue resolution", "status": "compliant", "details": "Customer's account access issue was resolved", "timestamp": "01:25"},
+        {"id": "5", "category": "Sales Practices", "requirement": "No pressure tactics", "status": "compliant", "details": "Agent accepted customer's decision without pressure", "timestamp": "02:38"}
+      ],
+      "analytics": {
+        "agentTalkTime": 60,
+        "customerTalkTime": 40,
+        "agentTone": 89,
+        "customerSentiment": 75,
+        "silencePeriods": 4,
+        "interruptionCount": 1,
+        "keyPhrases": ["password reset", "account access", "security", "verification", "premium plan"]
+      }
+    },
+    {
+      "id": "call-121",
+      "date": "May 2, 2025",
+      "time": "16:45",
+      "agent": "Alice Johnson",
+      "customer": "Michael Brown",
+      "duration": "12:05",
+      "status": "violation",
+      "score": 68,
+      "transcript": [
+        {"id": "1", "speaker": "agent", "text": "Customer support, Alice speaking. How can I help?", "time": "00:00"},
+        {"id": "2", "speaker": "customer", "text": "Hi, I need to cancel my subscription immediately. I've been trying to do it online but the system keeps giving me errors.", "time": "00:04"},
+        {"id": "3", "speaker": "agent", "text": "I see. May I know the reason why you want to cancel your subscription?", "time": "00:15"},
+        {"id": "4", "speaker": "customer", "text": "I'm not using the service enough to justify the cost. I've made my decision and just need to cancel it now.", "time": "00:20"},
+        {"id": "5", "speaker": "agent", "text": "I understand, but before we process the cancellation, have you considered our lower-tier options? We have a basic plan that's 50% cheaper than your current one.", "time": "00:32"},
+        {"id": "6", "speaker": "customer", "text": "No, I've already decided to cancel. I don't want another plan.", "time": "00:48"},
+        {"id": "7", "speaker": "agent", "text": "I understand, but our basic plan includes all the features you've been using most frequently, based on your account activity. It might be a better fit for your needs.", "time": "00:53"},
+        {"id": "8", "speaker": "customer", "text": "Look, I appreciate the suggestion, but I've made up my mind. Please just process the cancellation.", "time": "01:10"},
+        {"id": "9", "speaker": "agent", "text": "I can help you with that cancellation, but first I should inform you that if you cancel now, you'll lose access to all your stored data immediately. Wouldn't it be better to downgrade instead?", "time": "01:18"},
+        {"id": "10", "speaker": "customer", "text": "That's not what your terms of service say. According to your website, I should have access to download my data for 30 days after cancellation.", "time": "01:36"},
+        {"id": "11", "speaker": "agent", "text": "Oh, you're right about that. I apologize for the confusion. Let me process that cancellation for you now.", "time": "01:50"},
+        {"id": "12", "speaker": "agent", "text": "I'll need your account email and the last four digits of the payment card on file to verify your identity.", "time": "02:00"},
+        {"id": "13", "speaker": "customer", "text": "My email is michael.brown@example.com and the last four digits are 7890.", "time": "02:10"},
+        {"id": "14", "speaker": "agent", "text": "Thank you. I see your account now. Just to confirm, you're on the premium tier that renews on the 15th of each month, correct?", "time": "02:18"},
+        {"id": "15", "speaker": "customer", "text": "That's correct.", "time": "02:28"},
+        {"id": "16", "speaker": "agent", "text": "Alright, I've processed your cancellation. Your subscription will remain active until the end of the current billing cycle on May 15th. After that, you'll have 30 days to download any data from your account.", "time": "02:30"},
+        {"id": "17", "speaker": "customer", "text": "Thank you. That's what I wanted.", "time": "03:00"},
+        {"id": "18", "speaker": "agent", "text": "Is there anything else I can help you with today? Perhaps you'd like to hear about our re-enrollment bonuses in case you change your mind in the future?", "time": "03:04"},
+        {"id": "19", "speaker": "customer", "text": "No, that's all. Thank you.", "time": "03:15"},
+        {"id": "20", "speaker": "agent", "text": "You're welcome. Thank you for being our customer. Have a good day.", "time": "03:18"}
+      ],
+      "complianceItems": [
+        {"id": "1", "category": "Cancellation Procedures", "requirement": "Facilitate timely cancellations", "status": "violation", "details": "Agent repeatedly attempted to prevent cancellation", "timestamp": "00:32"},
+        {"id": "2", "category": "Accurate Information", "requirement": "Provide correct policy information", "status": "violation", "details": "Agent provided false information about data access after cancellation", "timestamp": "01:18"},
+        {"id": "3", "category": "Identity Verification", "requirement": "Verify customer identity", "status": "compliant", "details": "Agent verified email and payment information", "timestamp": "02:00"},
+        {"id": "4", "category": "Call Resolution", "requirement": "Respect customer decisions", "status": "warning", "details": "Agent continued offering alternatives after customer made decision clear", "timestamp": "03:04"},
+        {"id": "5", "category": "Cancellation Process", "requirement": "Clearly explain post-cancellation terms", "status": "compliant", "details": "Agent explained remaining access period correctly", "timestamp": "02:30"}
+      ],
+      "analytics": {
+        "agentTalkTime": 70,
+        "customerTalkTime": 30,
+        "agentTone": 65,
+        "customerSentiment": 40,
+        "silencePeriods": 3,
+        "interruptionCount": 2,
+        "keyPhrases": ["cancel subscription", "downgrade", "basic plan", "cancellation", "data access"]
+      }
+    },
+    {
+      "id": "call-120",
+      "date": "May 2, 2025",
+      "time": "09:22",
+      "agent": "John Doe",
+      "customer": "Emily Davis",
+      "duration": "03:57",
+      "status": "compliant",
+      "score": 95,
+      "transcript": [
+        {"id": "1", "speaker": "agent", "text": "Thank you for calling customer support. This is John speaking. How may I assist you today?", "time": "00:00"},
+        {"id": "2", "speaker": "customer", "text": "Hi John, I just purchased your software and I'm having trouble with the installation. It keeps freezing at 75%.", "time": "00:07"},
+        {"id": "3", "speaker": "agent", "text": "I'm sorry to hear you're experiencing installation issues. I'd be happy to help resolve this. Could you please tell me which operating system you're using?", "time": "00:19"},
+        {"id": "4", "speaker": "customer", "text": "I'm using Windows 11, the latest version.", "time": "00:30"},
+        {"id": "5", "speaker": "agent", "text": "Thank you. And have you tried installing the software with administrator privileges?", "time": "00:34"},
+        {"id": "6", "speaker": "customer", "text": "I'm not sure what that means or how to do it.", "time": "00:42"},
+        {"id": "7", "speaker": "agent", "text": "No problem at all, I can guide you through it. First, let's close any installation windows you currently have open. Then, find the installer file in your downloads folder.", "time": "00:47"},
+        {"id": "8", "speaker": "customer", "text": "Okay, I've found it.", "time": "01:05"},
+        {"id": "9", "speaker": "agent", "text": "Great. Now right-click on the file and select 'Run as administrator' from the menu. You might see a security prompt asking for permission, just click 'Yes' to continue.", "time": "01:08"},
+        {"id": "10", "speaker": "customer", "text": "Alright, I've done that and the installer is running again.", "time": "01:25"},
+        {"id": "11", "speaker": "agent", "text": "Perfect. Let's monitor the installation process now. Please let me know if it progresses past the 75% mark or if it freezes again.", "time": "01:30"},
+        {"id": "12", "speaker": "customer", "text": "It's still going... it passed 75%! Now it's at 85%... 90%... and it's completed!", "time": "01:42"},
+        {"id": "13", "speaker": "agent", "text": "Excellent! I'm glad to hear the installation completed successfully. Is the software launching correctly now?", "time": "02:00"},
+        {"id": "14", "speaker": "customer", "text": "Yes, it just opened and I can see the welcome screen. Thank you so much for your help!", "time": "02:09"},
+        {"id": "15", "speaker": "agent", "text": "You're very welcome. Running the installer as administrator often resolves permission-related installation issues. Is there anything else you'd like help with today?", "time": "02:18"},
+        {"id": "16", "speaker": "customer", "text": "No, that's all I needed. Thanks again for making it so easy to understand.", "time": "02:34"},
+        {"id": "17", "speaker": "agent", "text": "It was my pleasure to help. If you have any other questions as you use our software, please don't hesitate to contact us again. Thank you for choosing our product, and have a wonderful day!", "time": "02:40"}
+      ],
+      "complianceItems": [
+        {"id": "1", "category": "Customer Communication", "requirement": "Clear instructions", "status": "compliant", "details": "Agent provided clear step-by-step guidance", "timestamp": "00:47"},
+        {"id": "2", "category": "Technical Support", "requirement": "Problem resolution", "status": "compliant", "details": "Agent successfully resolved installation issue", "timestamp": "01:08"},
+        {"id": "3", "category": "Customer Service", "requirement": "Professional greeting", "status": "compliant", "details": "Agent properly introduced himself and offered help", "timestamp": "00:00"},
+        {"id": "4", "category": "Call Resolution", "requirement": "Confirm resolution", "status": "compliant", "details": "Agent confirmed software was working after installation", "timestamp": "02:00"},
+        {"id": "5", "category": "Customer Service", "requirement": "Knowledge sharing", "status": "compliant", "details": "Agent explained the solution for future reference", "timestamp": "02:18"}
+      ],
+      "analytics": {
+        "agentTalkTime": 55,
+        "customerTalkTime": 45,
+        "agentTone": 96,
+        "customerSentiment": 92,
+        "silencePeriods": 2,
+        "interruptionCount": 0,
+        "keyPhrases": ["installation", "administrator privileges", "Windows 11", "freeze", "resolved"]
+      }
+    },
+    {
+      "id": "call-119",
+      "date": "May 1, 2025",
+      "time": "15:10",
+      "agent": "Jane Smith",
+      "customer": "Thomas Anderson",
+      "duration": "07:12",
+      "status": "compliant",
+      "score": 89,
+      "transcript": [
+        {"id": "1", "speaker": "agent", "text": "Thank you for calling customer support. This is Jane. How may I help you today?", "time": "00:00"},
+        {"id": "2", "speaker": "customer", "text": "Hi Jane, I have a question about the data export feature in your software. I need to export my data in a CSV format but I can't find this option.", "time": "00:07"},
+        {"id": "3", "speaker": "agent", "text": "I'd be happy to help you with the data export feature. Just to confirm, which version of our software are you currently using?", "time": "00:22"},
+        {"id": "4", "speaker": "customer", "text": "I'm using version 4.2.1, the latest one I believe.", "time": "00:32"},
+        {"id": "5", "speaker": "agent", "text": "Thank you for confirming. You're correct, that is our latest version. The CSV export feature was actually just added in this version. Let me guide you to where you can find it.", "time": "00:37"},
+        {"id": "6", "speaker": "customer", "text": "Great, thank you.", "time": "00:50"},
+        {"id": "7", "speaker": "agent", "text": "First, you'll need to navigate to the 'Data Management' section. You can find this in the main menu under 'Tools'. Have you located that?", "time": "00:52"},
+        {"id": "8", "speaker": "customer", "text": "Yes, I see it. I'm in the Data Management section now.", "time": "01:08"},
+        {"id": "9", "speaker": "agent", "text": "Perfect. Now, look for a button labeled 'Export Options' in the top right corner of the screen. It should have an icon that looks like an arrow pointing out of a box.", "time": "01:12"},
+        {"id": "10", "speaker": "customer", "text": "I see it, clicking on it now... Okay, I see several format options including CSV. That's exactly what I was looking for.", "time": "01:28"},
+        {"id": "11", "speaker": "agent", "text": "Excellent! You can select CSV from that list, and then you'll be able to choose which data fields you want to include in your export. Would you like me to go over those options with you as well?", "time": "01:40"},
+        {"id": "12", "speaker": "customer", "text": "Yes, please. I need to make sure I'm exporting all the necessary fields.", "time": "01:55"},
+        {"id": "13", "speaker": "agent", "text": "Of course. After selecting CSV, you'll see a list of all available data fields with checkboxes. By default, all fields are selected, but you can uncheck any fields you don't need. There's also a 'Select Essential Fields Only' button at the top if you prefer a more streamlined export.", "time": "02:00"},
+        {"id": "14", "speaker": "customer", "text": "That's helpful. And can I save these export settings for future use?", "time": "02:30"},
+        {"id": "15", "speaker": "agent", "text": "Absolutely. Once you've selected your preferred fields, there's a 'Save Settings' button at the bottom of the dialog box. You can give your export configuration a name, and it will be available in the 'Saved Exports' dropdown for future use.", "time": "02:35"},
+        {"id": "16", "speaker": "customer", "text": "Perfect. That will save me a lot of time since I need to do this export regularly.", "time": "02:58"},
+        {"id": "17", "speaker": "agent", "text": "I'm glad to hear that. Is there anything else you'd like to know about the export feature or any other features of our software?", "time": "03:04"},
+        {"id": "18", "speaker": "customer", "text": "No, that's all I needed to know. Thank you for your help.", "time": "03:13"},
+        {"id": "19", "speaker": "agent", "text": "You're very welcome. Thank you for contacting customer support today. If you have any other questions in the future, please don't hesitate to reach out to us again. Have a wonderful day!", "time": "03:17"}
+      ],
+      "complianceItems": [
+        {"id": "1", "category": "Customer Communication", "requirement": "Clear instructions", "status": "compliant", "details": "Agent provided clear step-by-step guidance", "timestamp": "00:52"},
+        {"id": "2", "category": "Technical Support", "requirement": "Feature explanation", "status": "compliant", "details": "Agent thoroughly explained export feature", "timestamp": "02:00"},
+        {"id": "3", "category": "Customer Service", "requirement": "Professional greeting", "status": "compliant", "details": "Agent properly introduced herself", "timestamp": "00:00"},
+        {"id": "4", "category": "Call Efficiency", "requirement": "Time optimization", "status": "compliant", "details": "Agent helped customer save time with saved exports", "timestamp": "02:35"},
+        {"id": "5", "category": "Call Resolution", "requirement": "Complete resolution", "status": "compliant", "details": "Customer confirmed issue was resolved", "timestamp": "03:13"}
+      ],
+      "analytics": {
+        "agentTalkTime": 58,
+        "customerTalkTime": 42,
+        "agentTone": 94,
+        "customerSentiment": 90,
+        "silencePeriods": 1,
+        "interruptionCount": 0,
+        "keyPhrases": ["data export", "CSV", "export options", "saved exports", "data fields"]
+      }
+    }
+  ]
+}
